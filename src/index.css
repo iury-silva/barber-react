@@ -1,0 +1,21 @@
+:root {
+  --primary-color: #9454D3;
+  --secondary-color: rgb(151 101 211 / 30%);
+  --third-color: #a06cd5;
+  --input-color: #501D54;
+  --button-color: rgb(151 101 211 / 30%);
+  --background-color: #242424;
+  --label-color: #949292;
+  --hover-input: #343338;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  background-color: var(--background-color);
+} 
