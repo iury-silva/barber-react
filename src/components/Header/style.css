@@ -1,0 +1,10 @@
+.userTab {
+  display: "flex";
+  align-items: "center";
+  gap: "1.3rem";
+  background-color: "var(--input-color)";
+  padding: "0.6rem";
+  padding-inline: "1rem";
+  border-radius: "1rem";
+  cursor: "pointer";
+}

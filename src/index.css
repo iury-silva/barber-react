@@ -1,12 +1,16 @@
 :root {
-  --primary-color: #9454D3;
+  --base-color: #73FAE8;
+  --primary-color: #9354d3b4;
+  --card-color: rgba(176, 119, 245, 30%);
   --secondary-color: rgb(151 101 211 / 30%);
   --third-color: #a06cd5;
-  --input-color: #501D54;
+  --input-color: #2C2C2E;
   --button-color: rgb(151 101 211 / 30%);
   --background-color: #242424;
   --label-color: #949292;
   --hover-input: #343338;
+  --black-color: #18181B;
+  --side-color: #1d1c1c;
 }
 
 * {
@@ -18,4 +22,28 @@
 
 body {
   background-color: var(--background-color);
-} 
+}
+
+/* .Toastify__progress-bar--success {
+  background: var(--primary-color);
+} */
+
+.Toastify__toast {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background-color: #18181B;
+  border-radius: 15px;
+  box-shadow: 0 0 10px var(--secondary-color);
+}
+/* Cor de fundo do autocomplete */
+/* input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 30px var(--input-color) inset; */
+  /* border-radius: 15px; */
+  /* width: 100% !important; */
+  /* border-color: transparent !important; */
+/* } */
+
+/* Cor do texto do autocomplete */
+/* input:-webkit-autofill {
+  -webkit-text-fill-color: rgb(255, 255, 255) !important;
+} */

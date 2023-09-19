@@ -1,8 +1,13 @@
 import { TextField } from "@mui/material";
 import propTypes from "prop-types";
-function BaseInput(props) {
+import { useFormContext } from "react-hook-form";
+const BaseInput = ( (props) => {
+  const { register } = useFormContext();
+
   const baseSx = {
-    backgroundColor: "#2C2C2E",
+    "& .MuiFilledInput-root": {
+      backgroundColor: "var(--input-color)",
+    },
     borderRadius: "15px",
   };
 
@@ -25,31 +30,40 @@ function BaseInput(props) {
       {...props}
       variant="filled"
       color="secondary"
-      FormHelperTextProps={{
+      autoComplete="off"
+      error={props.error}
+      FormHelperTextProps={!props.error ?{
         style: {
           color: "var(--label-color)",
         },
-      }}
-      InputLabelProps={{
+      }:{}}
+      InputLabelProps={!props.error ?{
         style: {
           color: "var(--label-color)",
         },
-      }}
+      }: {}}
       InputProps={
-        props.InputProps ? { ...baseInputProps, ...props.InputProps } : baseInputProps
+        props.InputProps
+          ? { ...baseInputProps, ...props.InputProps }
+          : baseInputProps
       }
       sx={props.sx ? { ...baseSx, ...props.sx } : baseSx}
+      {...register(props.name)}
+      defaultValue={props.defaultValue}
     >
       {props.children}
     </TextField>
   );
-}
+});
 
 BaseInput.propTypes = {
   sx: propTypes.object,
   endAdornment: propTypes.element,
   InputProps: propTypes.object,
   children: propTypes.node,
+  defaultValue: propTypes.string,
+  name: propTypes.string,
+  error: propTypes.bool,
 };
 
 export default BaseInput;

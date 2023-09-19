@@ -7,14 +7,18 @@ import {
   FormControl,
   styled,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import BaseInput from "../BaseInput";
 import {
   VisibilityOutlined,
   VisibilityOffOutlined,
   MailOutlineOutlined,
-  Check,
 } from "@mui/icons-material";
+import BaseButton from "../BaseButton";
+import { useForm, FormProvider } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AuthContext } from "../../context/Auth/AuthContext";
 
 const OptionCustom = styled(MenuItem)({
   display: "flex",
@@ -31,95 +35,121 @@ const OptionCustom = styled(MenuItem)({
   },
 });
 
+const createUserSchema = z.object({
+  userType: z.string(),
+  email: z.string().nonempty("Email obrigatório").email(),
+  password: z.string().min(6),
+});
+
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [type, setType] = useState("CLIENT");
+  /**
+   * @description States below
+   */
   const [showPass, setShowPass] = useState(false);
+  const createUserForm = useForm({
+    resolver: zodResolver(createUserSchema),
+  });
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = createUserForm;
+
+  const { onLogin, loading} = useContext(AuthContext);
 
   return (
     <>
-      <Stack
-        direction="column"
-        spacing={2}
-        sx={{
-          padding: "20px",
-        }}
-      >
-        <FormControl variant="filled">
-          <BaseInput
-            select
-            label="Tipo de Usuário"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            InputProps={{
-              sx: {
-                "& .MuiSvgIcon-root": {
-                  color: "var(--primary-color)",
-                },
-              },
+      <FormProvider {...createUserForm}>
+        <form onSubmit={handleSubmit(onLogin)}>
+          <Stack
+            direction="column"
+            spacing={2}
+            sx={{
+              padding: "20px",
             }}
           >
-            <OptionCustom
-              value="CLIENT"
-              dense
-              
-            >
-              Cliente {type === "CLIENT" && <Check fontSize="13" />}
-            </OptionCustom>
-            <OptionCustom
-              value="BARBER"
-              dense
-              autoFocus={false}
-            >
-              Barbeiro {type === "BARBER" && <Check fontSize="13" />}
-            </OptionCustom>
-          </BaseInput>
-        </FormControl>
-        <Divider
-          variant="middle"
-          sx={{
-            marginTop: "1rem",
-            marginBottom: "1rem",
-            backgroundColor: "#2C2C2E",
-          }}
-        />
-        <BaseInput
-          id="email"
-          label="Email"
-          value={email}
-          InputProps={{
-            endAdornment: (
-              <IconButton>
-                <InputAdornment position="end">
-                  <MailOutlineOutlined
-                    sx={{
-                      color: "var(--label-color)",
-                    }}
-                  />
-                </InputAdornment>
-              </IconButton>
-            ),
-          }}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <BaseInput
-          id="password"
-          label="Password"
-          type={showPass ? "text" : "password"}
-          InputProps={{
-            endAdornment: (
-              <IconButton onClick={() => setShowPass(!showPass)}>
-              <InputAdornment position="end">
-                { showPass ? <VisibilityOffOutlined sx={{color: "var(--label-color)"}}/> : <VisibilityOutlined sx={{color: "var(--label-color)"}}/>}
-                </InputAdornment>
-              </IconButton>
-            ),
-          }}
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-        />
-      </Stack>
+            <FormControl variant="filled">
+              <BaseInput
+                select
+                label="Tipo de Usuário"
+                name="userType"
+                defaultValue="CLIENT"
+                InputProps={{
+                  sx: {
+                    "& .MuiSvgIcon-root": {
+                      color: "var(--primary-color)",
+                    },
+                  },
+                }}
+              >
+                <OptionCustom value="CLIENT" dense>
+                  Cliente
+                </OptionCustom>
+                <OptionCustom value="BARBER" dense autoFocus={false}>
+                  Barbeiro
+                </OptionCustom>
+              </BaseInput>
+            </FormControl>
+            <Divider
+              variant="middle"
+              sx={{
+                marginTop: "1rem",
+                marginBottom: "1rem",
+                backgroundColor: "#2C2C2E",
+              }}
+            />
+            <BaseInput
+              id="email"
+              label="Email"
+              type="email"
+              name="email"
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              InputProps={{
+                endAdornment: (
+                  <IconButton disableTouchRipple>
+                    <InputAdornment position="end">
+                      <MailOutlineOutlined
+                        sx={{
+                          color: "var(--label-color)",
+                        }}
+                        fontSize="small"
+                      />
+                    </InputAdornment>
+                  </IconButton>
+                ),
+              }}
+            />
+            <BaseInput
+              id="password"
+              label="Password"
+              type={showPass ? "text" : "password"}
+              name="password"
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => setShowPass(!showPass)}>
+                    <InputAdornment position="end">
+                      {showPass ? (
+                        <VisibilityOffOutlined
+                          sx={{ color: "var(--label-color)" }}
+                        />
+                      ) : (
+                        <VisibilityOutlined
+                          sx={{ color: "var(--label-color)" }}
+                        />
+                      )}
+                    </InputAdornment>
+                  </IconButton>
+                ),
+              }}
+            />
+          </Stack>
+          <Stack direction={"column"} alignItems="center" marginTop={3}>
+            <BaseButton text="Entrar" type="submit" loading={loading} />
+          </Stack>
+        </form>
+      </FormProvider>
     </>
   );
 };
